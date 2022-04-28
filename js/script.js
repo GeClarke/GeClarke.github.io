@@ -1,23 +1,21 @@
 (function(){
+    //Declare global variables
     let wrongAnswersArray = [];
 
 
 
     function buildQuiz(){
       // variable to store the HTML output
-      const output = [];
-  
-      // for each question...
-      myQuestions.forEach(
-        (currentQuestion, questionAnswer) => {
+      let output = [];
+      // iterates over question array
+      myQuestions.forEach((currentQuestion, questionAnswer) => {
           
-          // variable to store the list of possible answers
-          const answers = [];
+          // store the list of multiple choice answers here
+          let answers = [];
   
-          // and for each available answer...
+          // and for each available answer
           for(letter in currentQuestion.answers){
-  
-            // ...add an HTML radio button
+            // beginning of dynamic html building!
             answers.push(
               `<label>
                 <input type="radio" name="question${questionAnswer}" value="${letter}">
@@ -26,7 +24,6 @@
               </label>`
             );
           }
-  
           // add this question and its answers to the output
           output.push(
             `<div class="question col "> <h4>${currentQuestion.question}</h4></div>
@@ -34,99 +31,86 @@
           );
         }
       );
-  
+      //Turn the output variable into a string of html and put it on the page. 
       document.getElementById("quiz").innerHTML = output.join('');
-      // finally combine our output list into one string of HTML and put it on the page
-   //   quizContainer.innerHTML = output.join('');
-    }
+    }//End of the buildQuiz function
 
-  
-  
     function showResults(){
       
-      // gather answer containers from our quiz query selector all looks at all html document tags and finds class name answers
-      const answerContainers = quizContainer.querySelectorAll('.answers');
+      // look at all html tags and find class answers, then store
+      let answerContainers = quizContainer.querySelectorAll('.answers');
   
-      // keep track of user's answers
+      // keep track of correct answers for score calculation later
       let numCorrect = 0;
   
-      // for each question...
       myQuestions.forEach( (currentQuestion, questionAnswer) => {
-  
-        // find selected answer
-        const answerContainer = answerContainers[questionAnswer];
-        const selector = `input[name=question${questionAnswer}]:checked`;
-        const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+        let answerContainer = answerContainers[questionAnswer];
+        let selector = `input[name=question${questionAnswer}]:checked`;
+        let userAnswer = (answerContainer.querySelector(selector) || {}).value;
   
         // if answer is correct
         if(userAnswer === currentQuestion.correctAnswer){
           // add to the number of correct answers
           numCorrect++;
           // color the answers green
-          answerContainers[questionAnswer].style.color = 'lightgreen';
+          answerContainers[questionAnswer].style.color = 'green';
         }
         // if answer is wrong or blank
         else{
-            // color the answers red
-            let wrongAnswers = answerContainers[questionAnswer];
-            wrongAnswersArray.push(currentQuestion.question + " Correct Answer is... ", currentQuestion.correctAnswer + ":", currentQuestion.answers[currentQuestion.correctAnswer],"<br>");
-            //Debugging wrong answer array
-            console.log(wrongAnswersArray);
-            wrongAnswers.style.color = 'red';
+            // color the answers red and build wrongAnswersArray for display later. 
+            answerContainers[questionAnswer].style.color = "red"
+            wrongAnswersArray.push(currentQuestion.question + " Correct Answer is... ", currentQuestion.correctAnswer + ":", 
+            currentQuestion.answers[currentQuestion.correctAnswer],"<br>");
           }
           
         
       });
-      
+      //Calculate percentage score 
       percentage = parseInt((100 * numCorrect) / myQuestions.length);
-      
       // show number of correct answers out of total
       resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
       // show the percentage of correct answers
       resultsContainer.innerHTML += `<br>Percentage correct: ${percentage}%`;
-      // show correct answers
-      //resultsContainer.innerHTML += `<br>Questions correct: ${correctAnswerArray}`;
        // show wrong answers
        wrongAnswersArray = wrongAnswersArray.join(" ");
        resultsContainer.innerHTML += `<br> <b>Incorrect Questions:</b> <br> ${wrongAnswersArray}`;
-    }
+    }//End of show results function
   
     // get the divs for the quiz and results section, and grab the submit and remove button
-    const quizContainer = document.getElementById('quiz');
-    const resultsContainer = document.getElementById('results');
-    const submitButton = document.getElementById('submit');
+    let quizContainer = document.getElementById('quiz');
+    let resultsContainer = document.getElementById('results');
+    let submitButton = document.getElementById('submit');
     
 
     //create an object for the questions, answers and correct answers
-    const myQuestions = [
+    let myQuestions = [
       {
-        question: "Who invented JavaScript?",
+        question: "A password salt is best described as?",
         answers: {
-          a: "Douglas Crockford",
-          b: "Sheryl Sandberg",
-          c: "Brendan Eich"
+            a: "Random data added to a password before hashing",
+            b: "Non-random data added to a password before hashing",
+            c: "A method of password cracking",
+            d: "Password metadata"
         },
-        correctAnswer: "c"
+        correctAnswer: "a"
       },
       {
-        question: "Which one of these is a JavaScript package manager?",
+        question: "A caeser cypher involves what?",
         answers: {
-          a: "Node.js",
-          b: "TypeScript",
-          c: "npm"
+          a: "Using a keyword to encrypt a message",
+          b: "Shifting all characters up or down the alphabet",
+          c: "Using an enigma machine",
         },
-        correctAnswer: "c"
+        correctAnswer: "b"
       },
       {
-        question: "Which tool can you use to ensure code quality?",
+        question: "Asymmetric key means that the same key is used for encrypting and decrypting a file. True or false?",
         answers: {
-          a: "Angular",
-          b: "jQuery",
-          c: "RequireJS",
-          d: "ESLint"
+            a: "True",
+            b: "False",
         },
-        correctAnswer: "d"
-      }
+        correctAnswer: "b"
+    }
     ];
 
 
