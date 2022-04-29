@@ -42,3 +42,7 @@ body{
 #newQuiz:hover{
 	background-color: cyan;
 }
+
+h2 {
+	text-align: center;
+}
